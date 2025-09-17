@@ -1,0 +1,33 @@
+# Core LangChain dependencies
+langchain>=0.1.0
+langchain-community>=0.0.10
+langchain-core>=0.1.0
+
+# Document processing
+pypdf>=3.0.0
+faiss-cpu>=1.7.0
+
+# Text splitting and embeddings
+sentence-transformers>=2.2.0
+transformers>=4.30.0
+
+# Google Generative AI (for API mode)
+langchain-google-genai>=1.0.0
+google-generativeai>=0.3.0
+
+# Hugging Face embeddings (for local mode)
+langchain-huggingface>=0.0.1
+
+# Ollama integration (new recommended package)
+langchain-ollama>=0.1.0
+
+# Environment management
+python-dotenv>=1.0.0
+
+# Optional: For better performance
+torch>=2.0.0
+numpy>=1.24.0
+
+# Note: For Ollama support, install ollama separately:
+# curl -fsSL https://ollama.ai/install.sh | sh
+# ollama pull phi3:mini
