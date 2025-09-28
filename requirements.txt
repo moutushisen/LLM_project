@@ -28,6 +28,12 @@ python-dotenv>=1.0.0
 torch>=2.0.0
 numpy>=1.24.0
 
+# Streamlit GUI dependencies
+streamlit>=1.28.0
+streamlit-chat>=0.1.1
+PyMuPDF>=1.23.0  # for PDF preview (fitz)
+Pillow>=10.0.0   # for image processing
+
 # Note: For Ollama support, install ollama separately:
 # curl -fsSL https://ollama.ai/install.sh | sh
 # ollama pull phi3:mini

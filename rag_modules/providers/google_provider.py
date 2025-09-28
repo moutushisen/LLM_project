@@ -49,10 +49,30 @@ def get_google_providers(model_name: str = "gemini-1.5-flash") -> Optional[Tuple
         return None
 
     try:
+        # First try to query available models to ensure the model exists
+        available_models = query_google_models()
+        
+        # If the requested model is not available, fall back to a working model
+        if available_models and model_name not in available_models:
+            print(f"⚠️  Model '{model_name}' not available, trying available models...")
+            # Try common working models in order
+            fallback_models = ["gemini-1.5-pro", "gemini-1.0-pro", "gemini-pro"]
+            for fallback in fallback_models:
+                if fallback in available_models:
+                    model_name = fallback
+                    print(f"✅ Using model: {model_name}")
+                    break
+            else:
+                # Use the first available model if no fallbacks work
+                if available_models:
+                    model_name = available_models[0]
+                    print(f"✅ Using first available model: {model_name}")
+        
         embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
         llm = ChatGoogleGenerativeAI(model=model_name, temperature=0.3)
         return embeddings, llm
-    except Exception:
+    except Exception as e:
+        print(f"Google provider initialization failed: {e}")
         return None
 
 
