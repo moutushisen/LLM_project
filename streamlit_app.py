@@ -12,10 +12,14 @@ import fitz  # PyMuPDF
 from PIL import Image
 import io
 from typing import List, Optional
+from datetime import datetime, timedelta
+from memory.storage import MemoryStorage
+from memory.rolling import RollingMemoryStorage
 
 # Import our existing RAG modules
 from rag_modules.app import SimpleRAGApp
 from rag_modules.utils import pdf_utils
+from memory.generator import generate_merged_memory
 
 # Page configuration
 st.set_page_config(
@@ -70,6 +74,13 @@ st.markdown("""
     .stButton > button:hover {
         background-color: #5a6fd8;
     }
+    
+    /* Make the chat container scrollable */
+    [data-testid="stVerticalBlock"] > [data-testid="stVerticalBlock"] > [data-testid="stVerticalBlock"] > [data-testid="stVerticalBlock"] > div:nth-child(2) > .st-emotion-cache-1jicfl2 {
+        height: 500px;
+        overflow-y: auto;
+        padding-right: 1rem;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -93,6 +104,12 @@ def init_session_state():
         
     if 'model_initialized' not in st.session_state:
         st.session_state.model_initialized = False
+
+    # Memory system state
+    if 'memory_storage' not in st.session_state:
+        st.session_state.memory_storage = MemoryStorage()
+    if 'rolling_memory' not in st.session_state:
+        st.session_state.rolling_memory = RollingMemoryStorage()
 
 def initialize_model():
     """Initialize the RAG model"""
@@ -152,6 +169,73 @@ def display_chat_message(message: dict):
                     for source in message["sources"]:
                         st.write(f"• {source}")
 
+def summarize_and_store_memory():
+    """Summarize and store memory from the current chat history."""
+    max_chars = st.session_state.rolling_memory.max_chars
+    with st.spinner("🧠 Generating and merging memory..."):
+        progress = st.progress(0, text="Starting…")
+
+        # Step 1: get history text and new chat pairs
+        history_text = st.session_state.rolling_memory.get_text()
+        messages = st.session_state.get("chat_history", [])
+        
+        # Use all messages to rebuild memory idempotently
+        pairs = []
+        buf = []
+        for m in messages:
+            role = m.get("role")
+            
+            raw_content = m.get("content", "")
+            # Ensure content is always a string before stripping
+            content_str = "\n".join(map(str, raw_content)) if isinstance(raw_content, list) else str(raw_content)
+
+            if role == "user":
+                if buf:
+                    pairs.append((buf[0], ""))
+                buf = [content_str.strip()]
+            elif role == "assistant" and buf:
+                pairs.append((buf[0], content_str.strip()))
+                buf = []
+
+        if not pairs and not history_text.strip():
+            st.warning("No available session context and historical memory is empty. Cannot generate memory. Please chat with the assistant first.")
+            progress.empty()
+            return
+
+        # Step 2: build inputs for generator
+        progress.progress(25, text="Preparing prompts…")
+
+        # Step 3: call decoupled memory generator (strictly local model)
+        progress.progress(45, text="Calling model…")
+        try:
+            merged = generate_merged_memory(
+                chat_pairs=pairs,
+                history_text=history_text,
+                max_chars=max_chars,
+                model_name="gemini-2.5-pro-preview-03-25" # Force Gemini for memory generation
+            )
+        except Exception as gen_err:
+            st.error(f"Memory generation failed: {gen_err}")
+            raise
+
+        st.session_state.rolling_memory.set_text(merged)
+        try:
+            save_path = getattr(st.session_state.rolling_memory, 'db_path', None) or "/home/mihoyohb/LLM_project/data/memory.db"
+            print(f"💾 Saved to: {save_path}")
+            # Read-back verification
+            read_back = st.session_state.rolling_memory.get_text()
+            print(f"🔎 Verification read length: {len(read_back)} characters")
+            print(f"📄 Preview: {read_back[:120].replace('\n',' ')}{'…' if len(read_back)>120 else ''}")
+        except Exception:
+            pass
+        
+        progress.progress(100, text="Memory generation and merging completed")
+        st.success("Memory updated")
+
+        # Force sidebar editor to update
+        st.session_state['mem_force_refresh'] = True
+        st.rerun()
+
 def main():
     """Main Streamlit application"""
     init_session_state()
@@ -167,6 +251,35 @@ def main():
     # Initialize model if not done
     initialize_model()
     
+    # Sidebar: Memory management (simplified rolling memory)
+    with st.sidebar:
+        st.markdown("### 🧠 Memory (Rolling Text)")
+        st.caption("Generate and merge on demand; length limited, auto-summarizes when exceeded")
+
+        max_chars = st.number_input("Memory Length Limit (characters)", min_value=200, max_value=5000, value=1200, step=100)
+        st.session_state.rolling_memory.max_chars = max_chars # Update max_chars in session state
+        current_memory = st.session_state.rolling_memory.get_text()
+        # If a refresh was requested, clear widget state so it picks up DB value
+        if st.session_state.get('mem_force_refresh'):
+            st.session_state.pop('rolling_mem_editor', None)
+            st.session_state['mem_force_refresh'] = False
+        st.text_area("Current Memory (Read-only)", value=current_memory, key="rolling_mem_editor", height=180, disabled=True)
+        cols_mem = st.columns(3)
+        with cols_mem[0]:
+            pass # Removed "Save Memory" button
+        with cols_mem[1]:
+            if st.button("🗑️ Clear Memory", use_container_width=True):
+                st.session_state.rolling_memory.clear()
+                st.session_state['mem_force_refresh'] = True
+                st.rerun()
+        with cols_mem[2]:
+            pass
+
+        st.markdown("#### Generate/Merge Memory (Model-based)")
+        st.caption("Compress current session Q&A into key points and merge with historical memory. Summarizes if too long.")
+        if st.button("🧩 Generate & Merge", use_container_width=True):
+            summarize_and_store_memory()
+
     # Main layout: two columns
     col1, col2 = st.columns([1, 1])
     

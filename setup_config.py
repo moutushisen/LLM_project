@@ -69,6 +69,10 @@ GOOGLE_API_KEY={api_key}
 # Default models
 DEFAULT_GOOGLE_MODEL={google_model}
 DEFAULT_LOCAL_MODEL={local_model}
+
+# Memory feature (local only, safe defaults)
+MEMORY_ENABLED=true
+MEMORY_DB_PATH=/home/mihoyohb/LLM_project/data/memory.db
 """
 
     config_dir = Path.home() / ".config" / "llm_project"

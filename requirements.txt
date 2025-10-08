@@ -1,3 +1,10 @@
+# =============================================================================
+# RAG Q&A System - Python Dependencies
+# =============================================================================
+# Python Version: 3.9 - 3.11 recommended
+# Install: pip install -r requirements.txt
+# =============================================================================
+
 # Core LangChain dependencies
 langchain>=0.1.0
 langchain-community>=0.0.10
@@ -18,22 +25,39 @@ google-generativeai>=0.3.0
 # Hugging Face embeddings (for local mode)
 langchain-huggingface>=0.0.1
 
-# Ollama integration (new recommended package)
+# Ollama integration (recommended for local models)
 langchain-ollama>=0.1.0
 
 # Environment management
 python-dotenv>=1.0.0
 
-# Optional: For better performance
+# Deep learning framework (for embeddings and model inference)
 torch>=2.0.0
 numpy>=1.24.0
 
 # Streamlit GUI dependencies
 streamlit>=1.28.0
 streamlit-chat>=0.1.1
-PyMuPDF>=1.23.0  # for PDF preview (fitz)
-Pillow>=10.0.0   # for image processing
+PyMuPDF>=1.23.0  # PDF preview and rendering
+Pillow>=10.0.0   # Image processing
 
-# Note: For Ollama support, install ollama separately:
-# curl -fsSL https://ollama.ai/install.sh | sh
-# ollama pull phi3:mini
+# Database (SQLite - included in Python standard library, no extra install needed)
+# Memory management uses sqlite3 module from standard library
+
+# =============================================================================
+# Additional System Dependencies (install separately):
+# =============================================================================
+# 1. Ollama (for local LLM support):
+#    Linux/WSL: curl -fsSL https://ollama.ai/install.sh | sh
+#    macOS: brew install ollama
+#    Windows: Download from https://ollama.ai/download
+#    
+#    After installation, pull models:
+#    ollama pull phi3:mini
+#    ollama pull gemma:2b
+#
+# 2. CUDA Toolkit (optional, for GPU acceleration):
+#    Required for faster embeddings and local model inference
+#    Install from: https://developer.nvidia.com/cuda-downloads
+#    Then install: pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+# =============================================================================

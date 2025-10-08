@@ -67,12 +67,13 @@ class SimpleRAGApp:
 
     def _configure_model(self, embeddings, llm, model_name: str, model_type: str):
         """Helper method to configure model settings and avoid code duplication"""
+        # Always keep a reference to the LLM for auxiliary tasks (e.g., summarization)
+        self.llm = llm
         if self.splits:
             self.vectorstore, self.retrieval_chain = create_rag_chain(self.splits, embeddings, llm)
             self.chat_only = False
         else:
             # Chat-only mode
-            self.llm = llm
             self.vectorstore = None
             self.retrieval_chain = None
             self.chat_only = True
