@@ -1,109 +1,23 @@
-# Study Pal - AI Study Assistant
+# Study Pal - AI Document Assistant
 
-An intelligent document assistant powered by RAG (Retrieval-Augmented Generation) technology that remembers your learning preferences and background to provide personalized study support.
+An intelligent RAG-powered document assistant with personalized memory that remembers your learning preferences and provides customized study support.
 
-**Powered by:** LangChain • Google Gemini • Ollama • Streamlit
-
----
-
-## ✨ Core Features
-
-- **📄 PDF Document Analysis**: Smart PDF parsing with content-based Q&A and source citations
-- **🤖 Dual Model Support**: Switch freely between Google Gemini API and local Ollama models
-- **🧠 Personalized Memory**: AI remembers your learning style, background, and preferences for customized responses
-- **🎨 Modern Interface**: Streamlit web UI with split-screen PDF preview and chat
-- **💾 Privacy-First**: Memory data stored locally in SQLite for maximum privacy
-
-## 🚀 Quick Start
-
-### One-Line Installation (Recommended)
-
-```bash
-# 1. Create environment
-conda create -n rag_system python=3.10 -y
-conda activate rag_system
-
-# 2. Install Python dependencies
-pip install --upgrade pip
-pip install -r requirements.txt
-
-# 3. Install Ollama (for local models, optional)
-curl -fsSL https://ollama.ai/install.sh | sh
-ollama pull phi3:mini
-
-# 4. Configure API keys
-python setup_config.py
-
-# 5. Launch application
-python run_gui.py
-```
-
-### Configuration Guide
-
-Run `python setup_config.py` and follow the prompts:
-- **Google API Key**: Get from [Google AI Studio](https://makersuite.google.com/app/apikey)
-- **Default Models**: Choose Google or Ollama models
-- **Memory System**: Enable personalized memory features
-
-Config file location: `~/.config/llm_project/.env`
-
----
-
-## 💡 User Guide
-
-### Web Interface (Recommended)
-
-```bash
-python run_gui.py
-# Access http://localhost:8501 (WSL users see WSL configuration below)
-```
-
-**Interface Features:**
-- 📤 Upload PDF documents
-- 💬 Chat with AI to analyze documents
-- 🔄 Switch between Google/Ollama models
-- 🧠 Manage personalized memory
-
-### Personalized Memory System
-
-Let AI remember your learning preferences for customized assistance:
-
-**How to Use:**
-1. Chat with AI and tell it about your background (e.g., "I'm a beginner, need simple explanations")
-2. Click **"🧩 Generate & Merge"** in the sidebar
-3. Refresh the page to start a new session
-4. Upload a PDF and ask questions - AI will provide personalized responses based on your memory!
-
-**Example Scenarios:**
-
-| Scenario | Memory Settings | AI Response Style |
-|----------|----------------|-------------------|
-| 🎓 Beginner | "I'm a programming beginner, need simple explanations" | Uses analogies, avoids jargon, step-by-step approach |
-| 🔬 Researcher | "I'm an ML researcher, need technical depth and citations" | Provides technical details, math formulas, research references |
-| 📝 Exam Prep | "I'm preparing for exams, focus on formulas and key concepts" | Structured summaries, key formulas, concept highlights |
-
-**Memory Controls:**
-- 🧩 Generate & Merge: Create/update memory from conversation
-- 🗑️ Clear Memory: Delete all saved memory
-- 🔄 New Session: Reset chat and reload memory
-- View Memory: Run `python print_memory.py`
-
----
+**Tech Stack:** LangChain • Google Gemini • Ollama • Streamlit • FAISS
 
 ## 📁 Project Structure
 
 ```
 LLM_project/
-├── rag_modules/           # Core RAG modules
+├── rag_modules/           # Core RAG implementation
 │   ├── providers/         # Model providers (Google, Ollama)
-│   ├── utils/             # Utility functions (PDF processing, etc.)
-│   └── core/              # RAG chain builder
+│   ├── core/              # RAG chain builder
+│   └── utils/             # PDF utilities
 ├── memory/                # Memory system
-│   ├── generator.py       # Memory generation
-│   └── rolling.py         # Rolling memory manager
-├── data/                  # Data storage
+│   ├── generator.py       # Memory generation logic
+│   └── rolling.py         # SQLite storage manager
+├── data/                  # Local data storage
 │   └── memory.db          # SQLite database
-├── streamlit_app.py       # Web application
+├── streamlit_app.py       # Streamlit web interface
 ├── run_gui.py             # GUI launcher (WSL optimized)
 ├── setup_config.py        # Configuration wizard
 └── requirements.txt       # Python dependencies
@@ -111,141 +25,334 @@ LLM_project/
 
 ---
 
-## 🛠️ System Requirements
-
-| Component | Requirement |
-|-----------|-------------|
-| Python | 3.9 - 3.11 |
-| RAM | Minimum 8GB (16GB+ recommended) |
-| OS | Linux / macOS / Windows (WSL2) |
-| Disk Space | ~5GB (dependencies + models) |
-
----
-
-## 🔧 Advanced Configuration
-
-### Model Selection
-
-**Google Models:**
-```bash
-# Available models: gemini-1.5-pro, gemini-1.5-flash
-# Modify in .env file or switch via GUI interface
-```
-
-**Local Ollama Models:**
-```bash
-ollama list                    # List installed models
-ollama pull mistral:7b         # Download additional models
-ollama pull codellama:7b       # Code-specialized model
-```
-
-### GPU Acceleration (Optional)
+## 📊 Testing
 
 ```bash
-# Check CUDA availability
-python -c "import torch; print(f'CUDA: {torch.cuda.is_available()}')"
-
-# Install PyTorch with CUDA support
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
-```
-
-### WSL Network Configuration
-
-If running in WSL and Windows browser cannot access `localhost:8501`:
-
-```bash
-# Option 1: Use optimized launcher
-python run_gui.py
-
-# Option 2: Check WSL IP
-ip addr show eth0
-# Access from Windows browser: http://[WSL_IP]:8501
-```
-
----
-
-## 🐛 Common Issues
-
-<details>
-<summary><b>Ollama Connection Failed</b></summary>
-
-```bash
-# Check if Ollama is running
-ollama list
-
-# Start Ollama service
-ollama serve
-```
-</details>
-
-<details>
-<summary><b>Import Errors</b></summary>
-
-```bash
-# Ensure environment is activated
 conda activate rag_system
-
-# Reinstall dependencies
-pip install -r requirements.txt --force-reinstall
-```
-</details>
-
-<details>
-<summary><b>Memory Not Saving</b></summary>
-
-```bash
-# Check database file
-ls -la data/memory.db
-
-# View memory content
-python print_memory.py
-
-# Reset database (deletes all memories!)
-rm data/memory.db
-```
-</details>
-
-<details>
-<summary><b>Google API Errors</b></summary>
-
-```bash
-# Verify API key configuration
-cat ~/.config/llm_project/.env | grep GOOGLE_API_KEY
-
-# Reconfigure
-python setup_config.py
-```
-</details>
-
----
-
-## 📊 Testing Tools
-
-```bash
-python test_models.py              # Test model connections
 python test_memory_integration.py  # Test memory system
 python print_memory.py             # View memory content
 ```
 
 ---
 
-## 📚 Documentation
+## 🔧 System Requirements
+
+| Component | Requirement |
+|-----------|-------------|
+| Python | 3.9 - 3.11 |
+| RAM | 8GB minimum, 16GB+ recommended |
+| Storage | ~5GB (dependencies + models) |
+| OS | Linux, macOS, Windows (WSL2) |
+
+---
+
+---
+
+## ✨ Features
+
+- **📄 Smart PDF Analysis** - Upload PDFs and ask questions with source citations
+- **🤖 Dual Model Support** - Switch between Google Gemini API and local Ollama models
+- **🧠 Personalized Memory** - AI remembers your preferences for tailored responses
+- **🎨 Modern UI** - Split-screen interface with PDF preview and chat
+- **🔒 Privacy-First** - All data stored locally in SQLite
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.9 - 3.11
+- 8GB+ RAM (16GB recommended)
+- ~5GB disk space
+
+### Installation with Conda
+
+**1. Install Conda (if not already installed)**
+
+Download and install Miniconda:
+
+**Linux/WSL:**
+```bash
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+source ~/.bashrc
+```
+
+**macOS:**
+```bash
+# Intel Mac
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+bash Miniconda3-latest-MacOSX-x86_64.sh
+
+# Apple Silicon (M1/M2)
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh
+bash Miniconda3-latest-MacOSX-arm64.sh
+
+source ~/.zshrc
+```
+
+**Windows:**
+- Download: https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe
+- Run installer and check "Add to PATH"
+- Open "Anaconda Prompt"
+
+**Verify installation:**
+```bash
+conda --version
+```
+
+**2. Create Conda Environment**
+
+```bash
+# Create environment with Python 3.10
+conda create -n rag_system python=3.10 -y
+
+# Activate environment
+conda activate rag_system
+
+# Verify Python version
+python --version
+```
+
+**3. Install Dependencies**
+
+```bash
+# Upgrade pip
+pip install --upgrade pip
+
+# Install all requirements (5-10 minutes)
+pip install -r requirements.txt
+```
+
+**4. Install Ollama (Optional - for local models)**
+
+**Linux/WSL:**
+```bash
+curl -fsSL https://ollama.ai/install.sh | sh
+ollama pull phi3:mini
+```
+
+**macOS:**
+```bash
+brew install ollama
+ollama pull phi3:mini
+```
+
+**Windows:**
+- Download from https://ollama.ai/download/windows
+- Run installer, then: `ollama pull phi3:mini`
+
+**5. Configure API Keys**
+
+```bash
+python setup_config.py
+```
+
+Get your Google API key from: https://makersuite.google.com/app/apikey
+
+**6. Launch Application**
+
+```bash
+# Make sure environment is activated
+conda activate rag_system
+
+# Start web interface
+python run_gui.py
+```
+
+Access at: http://localhost:8501
+
+---
+
+## 📋 Conda Environment Management
+
+### Essential Commands
+
+```bash
+# List all environments
+conda env list
+
+# Activate environment (do this before using the app)
+conda activate rag_system
+
+# Deactivate environment
+conda deactivate
+
+# Check current environment
+conda info --envs
+
+# View installed packages
+conda list
+pip list
+```
+
+### Environment Backup & Restore
+
+```bash
+# Export environment (backup)
+conda env export > environment.yml
+
+# Recreate environment from backup
+conda env create -f environment.yml
+```
+
+### Troubleshooting Environment Issues
+
+```bash
+# Remove and recreate environment
+conda deactivate
+conda env remove -n rag_system
+conda create -n rag_system python=3.10 -y
+conda activate rag_system
+pip install -r requirements.txt
+
+# Verify Python path (should show conda path)
+which python
+# Expected: ~/miniconda3/envs/rag_system/bin/python
+```
+
+---
+
+## 💡 Usage Guide
+
+### Web Interface
+
+1. **Upload PDF** - Click "Upload PDF File" to load a document
+2. **Ask Questions** - Type questions in the chat input
+3. **View Sources** - Expand "Reference Sources" to see citations
+4. **Switch Models** - Toggle between Google and Ollama models in settings
+
+### Memory System
+
+The AI can remember your preferences for personalized responses:
+
+1. **Create Memory**: Chat with AI about your background
+   - Example: "I'm a beginner programmer, explain things simply"
+2. **Generate**: Click "🧩 Generate & Merge" in sidebar
+3. **Use Memory**: Start new session - AI remembers your preferences!
+
+**Example Use Cases:**
+
+| User Type | Memory Example | AI Behavior |
+|-----------|----------------|-------------|
+| Beginner | "I'm learning Python, need simple explanations" | Uses analogies, avoids jargon |
+| Researcher | "I'm an ML researcher, provide technical depth" | Includes math, citations, details |
+| Student | "Preparing for exams, focus on key concepts" | Structured summaries, formulas |
+
+**Memory Commands:**
+- `python print_memory.py` - View stored memory
+- Clear Memory button - Delete all memories
+
+---
+
+## 🛠️ Advanced Configuration
+
+### GPU Acceleration
+
+```bash
+# Check CUDA availability
+python -c "import torch; print(torch.cuda.is_available())"
+
+# Install PyTorch with CUDA (optional)
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+```
+
+### Additional Ollama Models
+
+```bash
+ollama list                  # View installed models
+ollama pull mistral:7b       # Download Mistral
+ollama pull codellama:7b     # Code-specialized model
+```
+
+### WSL Network Setup
+
+If running in WSL and can't access from Windows browser:
+
+```bash
+# Check WSL IP
+ip addr show eth0
+
+# Access from Windows: http://[WSL_IP]:8501
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### Environment Not Activated
+
+```bash
+# Symptom: "ModuleNotFoundError"
+# Solution: Ensure environment is activated
+conda activate rag_system
+which python  # Verify path
+```
+
+### Ollama Connection Failed
+
+```bash
+# Check Ollama status
+ollama list
+
+# Start Ollama service
+ollama serve
+```
+
+### Memory Not Saving
+
+```bash
+# Check database file
+ls -la data/memory.db
+
+# View memory
+python print_memory.py
+
+# Reset (deletes all data!)
+rm data/memory.db
+```
+
+### Import Errors
+
+```bash
+conda activate rag_system
+pip install -r requirements.txt --force-reinstall
+```
+
+### Google API Errors
+
+```bash
+# Verify API key
+cat ~/.config/llm_project/.env | grep GOOGLE_API_KEY
+
+# Reconfigure
+python setup_config.py
+```
+
+---
+
+
+
+## 📚 Resources
 
 - [LangChain Documentation](https://python.langchain.com/)
-- [Ollama Model Library](https://ollama.ai/library)
+- [Ollama Models](https://ollama.ai/library)
 - [Google Gemini API](https://ai.google.dev/)
-- [Streamlit Documentation](https://docs.streamlit.io/)
+- [Streamlit Docs](https://docs.streamlit.io/)
 
 ---
 
-## 🔐 Security Notes
+## 🔐 Security
 
-- ⚠️ Never commit API keys to the repository
-- 🔒 Keys are stored in local `.env` file (ignored by version control)
-- 🛡️ Memory data is stored locally only, never uploaded to the cloud
+- ⚠️ Never commit API keys to version control
+- 🔒 Keys stored in `~/.config/llm_project/.env` (gitignored)
+- 🛡️ All memory data stored locally, never uploaded
 
 ---
 
-**Version:** v1.0  
-**License:** MIT  
-**Author:** Study Pal Team
+## 📝 License
+
+MIT License - See LICENSE file for details
+
+**Version:** 1.0  
+**Maintained by:** Study Pal Team
