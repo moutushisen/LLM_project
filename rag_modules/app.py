@@ -31,7 +31,8 @@ class SimpleRAGApp:
 
     def print_header(self):
         print("\n" + "="*60)
-        print("OUR FIRST Simplified RAG Q&A System | Version 0")
+        print("📚 Study Pal - Your Reading Helper")
+        print("AI-Powered Document Assistant with Memory")
         print("="*60)
 
     def query_google_models(self) -> List[str]:
@@ -39,38 +40,46 @@ class SimpleRAGApp:
         self.available_google_models = models
         return models
 
-    def setup_google_model(self, model_name: str = "gemini-1.5-flash") -> bool:
+    def setup_google_model(self, model_name: str = "gemini-1.5-flash", memory_context: Optional[str] = None) -> bool:
         try:
             providers = get_google_providers(model_name)
             if not providers:
                 raise ValueError("Google AI not available or failed to initialize")
             
             embeddings, llm = providers
-            self._configure_model(embeddings, llm, model_name, "google")
+            self._configure_model(embeddings, llm, model_name, "google", memory_context)
             return True
         except Exception as e:
             print(f"Failed to setup Google model: {e}")
             return False
 
-    def setup_local_model(self, model_name: str = "phi3:mini") -> bool:
+    def setup_local_model(self, model_name: str = "phi3:mini", memory_context: Optional[str] = None) -> bool:
         try:
             providers = get_local_providers(model_name)
             if not providers:
                 raise ValueError("Local model not available or failed to initialize")
             
             embeddings, llm = providers
-            self._configure_model(embeddings, llm, model_name, "local")
+            self._configure_model(embeddings, llm, model_name, "local", memory_context)
             return True
         except Exception as e:
             print(f"Failed to setup local model: {e}")
             return False
 
-    def _configure_model(self, embeddings, llm, model_name: str, model_type: str):
-        """Helper method to configure model settings and avoid code duplication"""
+    def _configure_model(self, embeddings, llm, model_name: str, model_type: str, memory_context: Optional[str] = None):
+        """Helper method to configure model settings and avoid code duplication
+        
+        Args:
+            embeddings: Embedding model
+            llm: Language model
+            model_name: Name of the model
+            model_type: Type of model (google/local)
+            memory_context: Optional memory context to personalize the assistant
+        """
         # Always keep a reference to the LLM for auxiliary tasks (e.g., summarization)
         self.llm = llm
         if self.splits:
-            self.vectorstore, self.retrieval_chain = create_rag_chain(self.splits, embeddings, llm)
+            self.vectorstore, self.retrieval_chain = create_rag_chain(self.splits, embeddings, llm, memory_context)
             self.chat_only = False
         else:
             # Chat-only mode

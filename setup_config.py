@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import os
 import getpass
 from pathlib import Path
 
@@ -8,24 +7,17 @@ from pathlib import Path
 def setup_google_api():
     """Setup Google API key"""
     print("\n🔑 Google API Setup")
-    print("=" * 40)
-    print("1. Go to: https://makersuite.google.com/app/apikey")
-    print("2. Create a new API key")
-    print("3. Copy the API key and paste it below")
-    print("⚠️  Warning: Don't share your API key with anyone!!!!")
-    print("⚠️  Warning: Don't share your API key with anyone!!!!")
-    print("⚠️  Warning: Don't share your API key with anyone!!!!")
-
-    print()
+    print("Get your API key: https://makersuite.google.com/app/apikey")
+    print("⚠️  Never share your API key with anyone!\n")
     
     api_key = getpass.getpass("Enter your Google API key (hidden): ").strip()
     
     if not api_key:
-        print("No API key provided")
+        print("❌ No API key provided")
         return False
     
     if not api_key.startswith('AIza'):
-        print("Warning: Google API keys usually start with 'AIza'")
+        print("⚠️  API keys usually start with 'AIza'")
         confirm = input("Continue anyway? (y/N): ").strip().lower()
         if confirm != 'y':
             return False
@@ -36,33 +28,25 @@ def setup_google_api():
 def setup_models():
     """Setup default models"""
     print("\n🤖 Model Configuration")
-    print("=" * 40)
     
     # Google model
     google_models = ["gemini-1.5-pro", "gemini-1.5-flash", "gemini-1.0-pro"]
-    print("Available Google models:")
-    for i, model in enumerate(google_models, 1):
-        print(f"  {i}. {model}")
+    print("Google models: 1) gemini-1.5-pro  2) gemini-1.5-flash  3) gemini-1.0-pro")
     
-    choice = input(f"\nSelect default Google model (1-{len(google_models)}, default=2): ").strip()
+    choice = input("Select (1-3, default=2): ").strip()
     try:
-        if choice:
-            google_model = google_models[int(choice) - 1]
-        else:
-            google_model = google_models[1]  # gemini-1.5-flash
+        google_model = google_models[int(choice) - 1] if choice else google_models[1]
     except (ValueError, IndexError):
         google_model = google_models[1]
     
     # Local model
-    local_model = input("Enter default local model (default=phi3:mini): ").strip()
-    if not local_model:
-        local_model = "phi3:mini"
+    local_model = input("Local model (default=phi3:mini): ").strip() or "phi3:mini"
     
     return google_model, local_model
 
 
 def create_env_file(api_key, google_model, local_model):
-    """Create .env file under user's home config directory (~/.config/llm_project/.env)"""
+    """Create .env file in user's home config directory"""
     project_root = Path.cwd()
     db_path = project_root / "data" / "memory.db"
     
@@ -73,7 +57,7 @@ GOOGLE_API_KEY={api_key}
 DEFAULT_GOOGLE_MODEL={google_model}
 DEFAULT_LOCAL_MODEL={local_model}
 
-# Memory feature (local only, safe defaults)
+# Memory feature
 MEMORY_ENABLED=true
 MEMORY_DB_PATH={db_path.resolve()}
 """
@@ -81,32 +65,32 @@ MEMORY_DB_PATH={db_path.resolve()}
     config_dir = Path.home() / ".config" / "llm_project"
     config_dir.mkdir(parents=True, exist_ok=True)
     env_path = config_dir / ".env"
+    
     with open(env_path, "w") as f:
         f.write(env_content)
 
-    print(f"\nConfiguration saved to {env_path}")
-    print("Your API key is stored in your HOME directory, not the project repo.")
+    print(f"\n✅ Configuration saved to: {env_path}")
     return True
 
 
 def main():
     """Main setup wizard"""
-    print("RAG System Configuration Wizard")
+    print("\n📚 Study Pal - Configuration Setup")
     print("=" * 50)
     
-    # Check if HOME config .env already exists
+    # Check if config already exists
     home_env = Path.home() / ".config" / "llm_project" / ".env"
     if home_env.exists():
-        print("⚠️  ~/.config/llm_project/.env already exists!")
+        print(f"⚠️  Configuration already exists: {home_env}")
         overwrite = input("Overwrite? (y/N): ").strip().lower()
         if overwrite != 'y':
-            print("Setup cancelled")
+            print("❌ Setup cancelled")
             return
     
     # Setup Google API
     api_key = setup_google_api()
     if not api_key:
-        print("Setup cancelled - Google API key required")
+        print("❌ Setup cancelled - API key required")
         return
     
     # Setup models
@@ -114,11 +98,10 @@ def main():
     
     # Create .env file
     if create_env_file(api_key, google_model, local_model):
-        print("\nSetup complete!")
-        print("\nNext steps:")
-        print("1. Run: python interactive_rag_simplified.py")
-        print("2. Or run: python -c \"from rag_modules.app import main; main()\"")
-        print("\nWarning⚠️!!!!!!!!!! Keep your .env file secure and never share it!!!!!!!!!!")
+        print("\n🎉 Setup complete!")
+        print("\n📌 Next steps:")
+        print("   python run_gui.py")
+        print("\n🔒 Keep your API key secure!")
 
 
 if __name__ == "__main__":

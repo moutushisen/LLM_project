@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-RAG Q&A System GUI Launcher - With WSL Network Optimization
+Study Pal - GUI Launcher - With WSL Network Optimization
 """
 
 import subprocess
@@ -76,7 +76,7 @@ def check_dependencies():
 
 def main():
     """Main function"""
-    print("🚀 RAG Q&A System GUI Interface")
+    print("📚 Study Pal - Your Reading Helper")
     print("=" * 60)
     
     # Network diagnostics
