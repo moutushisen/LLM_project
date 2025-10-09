@@ -13,7 +13,6 @@ from PIL import Image
 import io
 from typing import List, Optional
 from datetime import datetime, timedelta
-from memory.storage import MemoryStorage
 from memory.rolling import RollingMemoryStorage
 
 # Import our existing RAG modules
@@ -106,8 +105,6 @@ def init_session_state():
         st.session_state.model_initialized = False
 
     # Memory system state
-    if 'memory_storage' not in st.session_state:
-        st.session_state.memory_storage = MemoryStorage()
     if 'rolling_memory' not in st.session_state:
         st.session_state.rolling_memory = RollingMemoryStorage()
 
@@ -220,7 +217,7 @@ def summarize_and_store_memory():
 
         st.session_state.rolling_memory.set_text(merged)
         try:
-            save_path = getattr(st.session_state.rolling_memory, 'db_path', None) or "/home/mihoyohb/LLM_project/data/memory.db"
+            save_path = st.session_state.rolling_memory.db_path
             print(f"💾 Saved to: {save_path}")
             # Read-back verification
             read_back = st.session_state.rolling_memory.get_text()

@@ -4,10 +4,13 @@ import os
 import sys
 import sqlite3
 from datetime import datetime
+from pathlib import Path
 
 
 def main():
-    db_path = os.getenv("MEMORY_DB_PATH", "/home/mihoyohb/LLM_project/data/memory.db")
+    PROJECT_ROOT = Path(__file__).resolve().parent
+    DEFAULT_DB_PATH = PROJECT_ROOT / "data" / "memory.db"
+    db_path = os.getenv("MEMORY_DB_PATH") or DEFAULT_DB_PATH
     print(f"DB: {db_path}")
 
     if not os.path.exists(db_path):

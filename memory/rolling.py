@@ -4,9 +4,11 @@ import os
 import sqlite3
 from datetime import datetime
 from typing import Optional
+from pathlib import Path
 
 
-DEFAULT_DB_PATH = os.getenv("MEMORY_DB_PATH", "/home/mihoyohb/LLM_project/data/memory.db")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DEFAULT_DB_PATH = PROJECT_ROOT / "data" / "memory.db"
 
 
 class RollingMemoryStorage:
@@ -18,7 +20,7 @@ class RollingMemoryStorage:
     """
 
     def __init__(self, db_path: Optional[str] = None):
-        self.db_path = db_path or DEFAULT_DB_PATH
+        self.db_path = db_path or os.getenv("MEMORY_DB_PATH") or DEFAULT_DB_PATH
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
         self._init_db()
 

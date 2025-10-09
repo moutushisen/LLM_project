@@ -63,6 +63,9 @@ def setup_models():
 
 def create_env_file(api_key, google_model, local_model):
     """Create .env file under user's home config directory (~/.config/llm_project/.env)"""
+    project_root = Path.cwd()
+    db_path = project_root / "data" / "memory.db"
+    
     env_content = f"""# Google API Configuration
 GOOGLE_API_KEY={api_key}
 
@@ -72,7 +75,7 @@ DEFAULT_LOCAL_MODEL={local_model}
 
 # Memory feature (local only, safe defaults)
 MEMORY_ENABLED=true
-MEMORY_DB_PATH=/home/mihoyohb/LLM_project/data/memory.db
+MEMORY_DB_PATH={db_path.resolve()}
 """
 
     config_dir = Path.home() / ".config" / "llm_project"
