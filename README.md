@@ -105,7 +105,7 @@ conda --version
 
 ```bash
 # Create environment with Python 3.10
-conda create -n rag_system python=3.10 -y
+conda create -n rag_system python=3.12 -y
 
 # Activate environment
 conda activate rag_system
@@ -117,10 +117,12 @@ python --version
 **3. Install Dependencies**
 
 ```bash
-# Upgrade pip
+# Upgrade pip(nO NEED)
 pip install --upgrade pip
 
 # Install all requirements (5-10 minutes)
+# YOU MUST FIRST INSTALL TORCH AND TORCHVISION BEFORE INSTALLING THE REQUIREMENTS
+pip3 install torch torchvision
 pip install -r requirements.txt
 ```
 

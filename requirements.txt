@@ -32,10 +32,10 @@ langchain-ollama>=0.1.0
 python-dotenv>=1.0.0
 
 # Deep learning framework (for embeddings and model inference)
-torch>=2.0.0
 numpy>=1.24.0
 
 # Streamlit GUI dependencies
+streamlit_chat
 streamlit>=1.28.0
 PyMuPDF>=1.23.0  # PDF preview and rendering
 Pillow>=10.0.0   # Image processing
