@@ -117,7 +117,7 @@ python --version
 **3. Install Dependencies**
 
 ```bash
-# Upgrade pip(nO NEED)
+# Upgrade pip(Maybe not needed)
 pip install --upgrade pip
 
 # Install all requirements (5-10 minutes)
