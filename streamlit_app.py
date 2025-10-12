@@ -7,6 +7,7 @@ Streamlit GUI for the RAG Q&A System
 import streamlit as st
 import os
 import time
+import tempfile
 from pathlib import Path
 import fitz  # PyMuPDF
 from PIL import Image
@@ -324,8 +325,9 @@ def main():
         )
         
         if uploaded_file is not None:
-            # Save uploaded file temporarily
-            temp_path = f"/tmp/{uploaded_file.name}"
+            # Save uploaded file temporarily (cross-platform)
+            temp_dir = tempfile.gettempdir()
+            temp_path = os.path.join(temp_dir, uploaded_file.name)
             with open(temp_path, "wb") as f:
                 f.write(uploaded_file.getbuffer())
             

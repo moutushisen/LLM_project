@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import getpass
+import platform
 from pathlib import Path
 
 
@@ -62,7 +63,15 @@ MEMORY_ENABLED=true
 MEMORY_DB_PATH={db_path.resolve()}
 """
 
-    config_dir = Path.home() / ".config" / "llm_project"
+    # Cross-platform config directory selection
+    system = platform.system()
+    if system == "Windows":
+        # Windows: use AppData\Roaming
+        config_dir = Path.home() / "AppData" / "Roaming" / "llm_project"
+    else:
+        # Linux/WSL/macOS: use .config
+        config_dir = Path.home() / ".config" / "llm_project"
+    
     config_dir.mkdir(parents=True, exist_ok=True)
     env_path = config_dir / ".env"
     
@@ -78,8 +87,13 @@ def main():
     print("\n📚 Study Pal - Configuration Setup")
     print("=" * 50)
     
-    # Check if config already exists
-    home_env = Path.home() / ".config" / "llm_project" / ".env"
+    # Check if config already exists (cross-platform)
+    system = platform.system()
+    if system == "Windows":
+        home_env = Path.home() / "AppData" / "Roaming" / "llm_project" / ".env"
+    else:
+        home_env = Path.home() / ".config" / "llm_project" / ".env"
+    
     if home_env.exists():
         print(f"⚠️  Configuration already exists: {home_env}")
         overwrite = input("Overwrite? (y/N): ").strip().lower()

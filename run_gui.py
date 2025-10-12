@@ -1,17 +1,49 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Study Pal - GUI Launcher - With WSL Network Optimization
+Study Pal - GUI Launcher - Cross-platform (Windows/WSL/Linux/macOS)
 """
 
 import subprocess
 import sys
 import os
 import socket
+import platform
 from pathlib import Path
 
+def is_wsl():
+    """Check if running in WSL"""
+    try:
+        with open('/proc/version', 'r') as f:
+            return 'microsoft' in f.read().lower() or 'wsl' in f.read().lower()
+    except:
+        return False
+
+def get_local_ip():
+    """Get local IP address (cross-platform)"""
+    try:
+        # Try to get IP by connecting to external address
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.settimeout(0.1)
+        try:
+            # Connect to Google DNS (doesn't actually send data)
+            s.connect(('8.8.8.8', 80))
+            ip = s.getsockname()[0]
+        finally:
+            s.close()
+        return ip
+    except:
+        try:
+            # Fallback: use hostname
+            return socket.gethostbyname(socket.gethostname())
+        except:
+            return None
+
 def get_wsl_ip():
-    """Get WSL IP address"""
+    """Get WSL IP address (Linux-specific)"""
+    if not is_wsl() and platform.system() != 'Linux':
+        return None
+    
     try:
         # Get WSL IP address
         result = subprocess.run(['ip', 'route', 'show', 'default'], 
@@ -36,7 +68,10 @@ def get_wsl_ip():
         return None
 
 def get_windows_ip():
-    """Get Windows host IP"""
+    """Get Windows host IP (from WSL)"""
+    if not is_wsl():
+        return None
+    
     try:
         # Get Windows IP via default gateway
         result = subprocess.run(['ip', 'route', 'show', 'default'], 
@@ -79,13 +114,25 @@ def main():
     print("📚 Study Pal - Your Reading Helper")
     print("=" * 60)
     
+    # Detect platform
+    system = platform.system()
+    running_in_wsl = is_wsl()
+    
+    print(f"🖥️  Platform: {system}" + (" (WSL)" if running_in_wsl else ""))
+    
     # Network diagnostics
     print("🔍 Network diagnostics...")
-    wsl_ip = get_wsl_ip()
-    windows_ip = get_windows_ip()
+    local_ip = get_local_ip()
     
-    print(f"WSL IP Address: {wsl_ip or 'Not detected'}")
-    print(f"Windows Host IP: {windows_ip or 'Not detected'}")
+    if running_in_wsl:
+        wsl_ip = get_wsl_ip()
+        windows_ip = get_windows_ip()
+        print(f"WSL IP Address: {wsl_ip or 'Not detected'}")
+        print(f"Windows Host IP: {windows_ip or 'Not detected'}")
+    elif system == "Windows":
+        print(f"Local IP Address: {local_ip or 'Not detected'}")
+    else:
+        print(f"Local IP Address: {local_ip or 'Not detected'}")
     print()
     
     # Check dependencies
@@ -100,8 +147,12 @@ def main():
         print("pip install -r requirements.txt")
         return
     
-    # Check configuration
-    home_env = Path.home() / ".config" / "llm_project" / ".env"
+    # Check configuration (cross-platform)
+    if system == "Windows":
+        home_env = Path.home() / "AppData" / "Roaming" / "llm_project" / ".env"
+    else:
+        home_env = Path.home() / ".config" / "llm_project" / ".env"
+    
     if not home_env.exists() and not os.getenv("GOOGLE_API_KEY"):
         print("⚠️  API configuration not found!")
         print("Please run first: python setup_config.py")
@@ -112,16 +163,27 @@ def main():
     print("🌐 Starting Web interface...")
     print("=" * 60)
     
-    if wsl_ip:
-        print(f"✅ Access in Windows browser: http://{wsl_ip}:8501")
-        print(f"✅ Access within WSL: http://localhost:8501")
+    if running_in_wsl:
+        wsl_ip = get_wsl_ip()
+        if wsl_ip:
+            print(f"✅ Access in Windows browser: http://{wsl_ip}:8501")
+            print(f"✅ Access within WSL: http://localhost:8501")
+        else:
+            print("⚠️  Cannot auto-detect WSL IP, please find manually")
+            print("   Run 'ip addr show eth0' to view WSL IP address")
+            print("   Then access in Windows browser: http://[WSL_IP]:8501")
+        print("📍 If unable to access, check Windows firewall settings")
+        print("📍 Or try running in Windows: wsl --shutdown then restart WSL")
+    elif system == "Windows":
+        print(f"✅ Access in browser: http://localhost:8501")
+        if local_ip and local_ip != "127.0.0.1":
+            print(f"✅ Access from other devices: http://{local_ip}:8501")
+        print("📍 If unable to access from other devices, check Windows firewall")
     else:
-        print("⚠️  Cannot auto-detect WSL IP, please find manually")
-        print("   Run 'ip addr show eth0' to view WSL IP address")
-        print("   Then access in Windows browser: http://[WSL_IP]:8501")
+        print(f"✅ Access in browser: http://localhost:8501")
+        if local_ip and local_ip != "127.0.0.1":
+            print(f"✅ Access from other devices: http://{local_ip}:8501")
     
-    print("📍 If unable to access, check Windows firewall settings")
-    print("📍 Or try running in Windows: wsl --shutdown then restart WSL")
     print("Press Ctrl+C to stop service")
     print("=" * 60)
     print()

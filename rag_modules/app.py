@@ -1,5 +1,6 @@
 import os
 import time
+import platform
 from typing import Optional, List
 
 from dotenv import load_dotenv
@@ -13,8 +14,13 @@ from .core.chain_builder import create_rag_chain
 
 class SimpleRAGApp:
     def __init__(self):
-        # Load from user HOME config first (~/.config/llm_project/.env), fallback to project .env
-        home_env = Path.home() / ".config" / "llm_project" / ".env"
+        # Load from user HOME config first (cross-platform), fallback to project .env
+        system = platform.system()
+        if system == "Windows":
+            home_env = Path.home() / "AppData" / "Roaming" / "llm_project" / ".env"
+        else:
+            home_env = Path.home() / ".config" / "llm_project" / ".env"
+        
         if home_env.exists():
             load_dotenv(dotenv_path=str(home_env))
         else:
