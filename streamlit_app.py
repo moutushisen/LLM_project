@@ -19,7 +19,14 @@ from memory.rolling import RollingMemoryStorage
 # Import our existing RAG modules
 from rag_modules.app import SimpleRAGApp
 from rag_modules.utils import pdf_utils
-from memory.generator import generate_merged_memory
+
+# Choose memory generator based on environment variable
+if os.getenv('USE_ENTITY_AWARE_MEMORY', 'false').lower() == 'true':
+    from memory.entity_aware_generator import generate_merged_memory
+    MEMORY_MODE = "Entity-Aware"
+else:
+    from memory.generator import generate_merged_memory
+    MEMORY_MODE = "Standard"
 
 # Page configuration
 st.set_page_config(
@@ -277,6 +284,12 @@ def main():
     with st.sidebar:
         st.markdown("### 🧠 Memory (Rolling Text)")
         st.caption("Generate and merge on demand; length limited, auto-summarizes when exceeded")
+        
+        # Display memory mode
+        if MEMORY_MODE == "Entity-Aware":
+            st.info("🔬 Mode: **Entity-Aware** (preserves key terms)")
+        else:
+            st.info("📝 Mode: **Standard**")
         
         # Memory status indicator
         if st.session_state.memory_loaded:

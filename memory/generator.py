@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from __future__ import annotations
 from typing import List, Tuple
 import os
 
@@ -52,14 +53,14 @@ def build_compress_prompt(text: str, max_chars: int) -> str:
 def _get_local_llm(model_name: str) -> ChatOllama:
     if not OLLAMA_OK:
         raise RuntimeError("Local model dependencies unavailable. Please install Ollama and langchain-ollama/community package")
-    return ChatOllama(model=model_name, temperature=0.3)
+    return ChatOllama(model=model_name, temperature=0.0)
 
 def _get_google_llm(model_name: str) -> ChatGoogleGenerativeAI:
     if not GOOGLE_GEMINI_OK:
         raise RuntimeError("Google Gemini dependencies unavailable. Please install langchain-google-genai")
     if not os.getenv("GOOGLE_API_KEY"):
         raise RuntimeError("GOOGLE_API_KEY environment variable not set")
-    return ChatGoogleGenerativeAI(model=model_name, temperature=0.3)
+    return ChatGoogleGenerativeAI(model=model_name, temperature=0.0)
 
 
 def generate_merged_memory(
