@@ -9,6 +9,7 @@ import sys
 import os
 import socket
 import platform
+import argparse
 from pathlib import Path
 
 def is_wsl():
@@ -111,8 +112,34 @@ def check_dependencies():
 
 def main():
     """Main function"""
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(
+        description='Study Pal - Your Reading Helper with AI-Powered Memory',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog='''
+Examples:
+  python run_gui.py                    # Use default memory (standard)
+  python run_gui.py --entity-aware     # Use entity-aware memory
+  python run_gui.py -e                 # Short form
+        '''
+    )
+    parser.add_argument(
+        '-e', '--entity-aware',
+        action='store_true',
+        help='Enable entity-aware memory generation (preserves key terms better)'
+    )
+    args = parser.parse_args()
+    
     print("📚 Study Pal - Your Reading Helper")
     print("=" * 60)
+    
+    # Display memory mode
+    if args.entity_aware:
+        print("🧠 Memory Mode: Entity-Aware (preserves key concepts)")
+        os.environ['USE_ENTITY_AWARE_MEMORY'] = 'true'
+    else:
+        print("🧠 Memory Mode: Standard (default)")
+        os.environ['USE_ENTITY_AWARE_MEMORY'] = 'false'
     
     # Detect platform
     system = platform.system()
