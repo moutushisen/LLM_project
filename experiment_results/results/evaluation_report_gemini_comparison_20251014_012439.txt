@@ -1,0 +1,102 @@
+================================================================================
+Memory Compression Evaluation - Combined Dataset
+================================================================================
+
+Config: gemini | gemini-2.5-flash-lite | 1200 chars | 505 samples | seed=42
+
+================================================================================
+COMPARISON: Standard vs Entity-Aware
+================================================================================
+
+Standard:
+  KP-Recall: 66.42% (CI: 64.38%—68.43%)
+  Entity-Pres: 37.39% (CI: 34.73%—40.02%)
+  Compression: 17.29% (CI: 16.38%—18.40%)
+
+Entity-Aware:
+  KP-Recall: 78.86% (CI: 76.97%—80.66%)
+  Entity-Pres: 64.90% (CI: 62.61%—67.00%)
+  Compression: 20.59% (CI: 19.61%—21.67%)
+
+Improvement: KP +12.44% | Entity +27.50%
+
+================================================================================
+Breakdowns
+================================================================================
+
+By Source Dataset:
+  lmsys          : KP=66.42% (n=505)
+
+By Domain:
+  Programming         : KP=69.95% (n=235)
+  Political Science   : KP=0.00% (n=1)
+  General Knowledge   : KP=52.47% (n=91)
+  Biology             : KP=86.67% (n=3)
+  Technology          : KP=73.67% (n=40)
+  Business            : KP=77.13% (n=17)
+  Science             : KP=73.48% (n=18)
+  Natural Language Processing: KP=66.67% (n=3)
+  Education           : KP=52.86% (n=3)
+  Data Science        : KP=80.00% (n=1)
+  Gardening           : aaKP=63.33% (n=2)
+  Machine Learning / High-Performance Computing: KP=47.62% (n=2)
+  Embedded Systems Programming: KP=84.72% (n=3)
+  Machine Learning / Deep Learning / GPU Computing: KP=87.50% (n=1)
+  Bioinformatics      : KP=33.33% (n=1)
+  Music History       : KP=80.00% (n=1)
+  Web Design          : KP=100.00% (n=1)
+  Chemical Industry   : KP=60.00% (n=1)
+  Engineering         : KP=25.00% (n=1)
+  Spiritual Guidance  : KP=83.33% (n=1)
+  International Relations: KP=80.00% (n=2)
+  Scientific Computing/GPU Programming: KP=80.00% (n=1)
+  Education Technology: KP=75.00% (n=1)
+  High-Performance Computing: KP=100.00% (n=1)
+  Construction        : KP=100.00% (n=1)
+  Data Science/Scientific Computing: KP=60.00% (n=1)
+  Cybersecurity       : KP=80.00% (n=2)
+  Literature          : KP=51.00% (n=5)
+  Veterinary Medicine : KP=75.00% (n=1)
+  Finance             : KP=51.43% (n=7)
+  Machine Learning    : KP=73.89% (n=6)
+  Machine Learning / GPU Computing: KP=66.67% (n=1)
+  Computer Science    : KP=81.11% (n=3)
+  Psychology          : KP=80.00% (n=1)
+  Embedded Systems    : KP=55.24% (n=7)
+  Psychology/Sociology/Behavioral Economics: KP=80.00% (n=1)
+  Chemistry           : KP=100.00% (n=1)
+  Language Learning   : KP=58.33% (n=3)
+  GPU Computing       : KP=66.67% (n=1)
+  AI Response Evaluation: KP=100.00% (n=1)
+  Mathematics         : KP=75.00% (n=1)
+  Creative Writing    : KP=66.67% (n=3)
+  Scientific Computing: KP=66.55% (n=4)
+  Embedded Systems / Programming: KP=71.43% (n=1)
+  Machine Learning/GPU Computing: KP=80.00% (n=2)
+  Healthcare          : KP=100.00% (n=1)
+  Travel              : KP=63.33% (n=2)
+  Travel Planning     : KP=20.00% (n=1)
+  Cooking             : KP=0.00% (n=1)
+  Law                 : KP=60.00% (n=1)
+  Language Processing : KP=100.00% (n=1)
+  Marketing/Hospitality: KP=75.00% (n=1)
+  AI Ethics           : KP=62.50% (n=2)
+  Animal Care         : KP=100.00% (n=1)
+  Creative Writing / Erotica: KP=0.00% (n=1)
+  Customer Service    : KP=50.00% (n=1)
+  Economics           : KP=25.00% (n=1)
+  Data Engineering    : KP=57.14% (n=1)
+  Automotive Engineering/Embedded Systems Programming: KP=83.33% (n=1)
+  Writing             : KP=25.00% (n=1)
+  Creative Writing/AI Interaction: KP=75.00% (n=1)
+  Statistics / Machine Learning: KP=40.00% (n=1)
+  Career Exploration  : KP=83.33% (n=1)
+  Operating Systems/Programming: KP=20.00% (n=1)
+
+By Difficulty:
+  Beginner       : KP=62.86% (n=248)
+  Intermediate   : KP=72.97% (n=158)
+  Advanced       : KP=65.22% (n=98)
+  N/A            : KP=33.33% (n=1)
+
+================================================================================

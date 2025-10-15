@@ -1,0 +1,102 @@
+================================================================================
+Memory Compression Evaluation - Combined Dataset
+================================================================================
+
+Config: phi3 | phi3:mini | 1200 chars | 505 samples | seed=42
+
+================================================================================
+COMPARISON: Standard vs Entity-Aware
+================================================================================
+
+Standard:
+  KP-Recall: 28.91% (CI: 26.58%—31.22%)
+  Entity-Pres: 12.39% (CI: 10.04%—14.85%)
+  Compression: 10.92% (CI: 9.91%—12.03%)
+
+Entity-Aware:
+  KP-Recall: 28.46% (CI: 26.08%—30.84%)
+  Entity-Pres: 13.48% (CI: 10.98%—16.11%)
+  Compression: 10.13% (CI: 8.96%—11.49%)
+
+Improvement: KP -0.45% | Entity +1.09%
+
+================================================================================
+Breakdowns
+================================================================================
+
+By Source Dataset:
+  lmsys          : KP=28.91% (n=505)
+
+By Domain:
+  Programming         : KP=22.05% (n=235)
+  Political Science   : KP=0.00% (n=1)
+  General Knowledge   : KP=44.18% (n=91)
+  Biology             : KP=46.67% (n=3)
+  Technology          : KP=28.21% (n=40)
+  Business            : KP=40.41% (n=17)
+  Science             : KP=23.48% (n=18)
+  Natural Language Processing: KP=75.00% (n=3)
+  Education           : KP=26.19% (n=3)
+  Data Science        : KP=20.00% (n=1)
+  Gardening           : KP=18.33% (n=2)
+  Machine Learning / High-Performance Computing: KP=15.48% (n=2)
+  Embedded Systems Programming: KP=13.89% (n=3)
+  Machine Learning / Deep Learning / GPU Computing: KP=12.50% (n=1)
+  Bioinformatics      : KP=16.67% (n=1)
+  Music History       : KP=40.00% (n=1)
+  Web Design          : KP=20.00% (n=1)
+  Chemical Industry   : KP=0.00% (n=1)
+  Engineering         : KP=25.00% (n=1)
+  Spiritual Guidance  : KP=50.00% (n=1)
+  International Relations: KP=20.00% (n=2)
+  Scientific Computing/GPU Programming: KP=20.00% (n=1)
+  Education Technology: KP=75.00% (n=1)
+  High-Performance Computing: KP=16.67% (n=1)
+  Construction        : KP=20.00% (n=1)
+  Data Science/Scientific Computing: KP=20.00% (n=1)
+  Cybersecurity       : KP=20.00% (n=2)
+  Literature          : KP=63.71% (n=5)
+  Veterinary Medicine : KP=25.00% (n=1)
+  Finance             : KP=45.71% (n=7)
+  Machine Learning    : KP=14.44% (n=6)
+  Machine Learning / GPU Computing: KP=16.67% (n=1)
+  Computer Science    : KP=16.98% (n=3)
+  Psychology          : KP=20.00% (n=1)
+  Embedded Systems    : KP=19.52% (n=7)
+  Psychology/Sociology/Behavioral Economics: KP=20.00% (n=1)
+  Chemistry           : KP=0.00% (n=1)
+  Language Learning   : KP=66.67% (n=3)
+  GPU Computing       : KP=33.33% (n=1)
+  AI Response Evaluation: KP=100.00% (n=1)
+  Mathematics         : KP=25.00% (n=1)
+  Creative Writing    : KP=26.67% (n=3)
+  Scientific Computing: KP=16.07% (n=4)
+  Embedded Systems / Programming: KP=14.29% (n=1)
+  Machine Learning/GPU Computing: KP=18.33% (n=2)
+  Healthcare          : KP=40.00% (n=1)
+  Travel              : KP=33.33% (n=2)
+  Travel Planning     : KP=20.00% (n=1)
+  Cooking             : KP=33.33% (n=1)
+  Law                 : KP=40.00% (n=1)
+  Language Processing : KP=33.33% (n=1)
+  Marketing/Hospitality: KP=100.00% (n=1)
+  AI Ethics           : KP=37.50% (n=2)
+  Animal Care         : KP=0.00% (n=1)
+  Creative Writing / Erotica: KP=80.00% (n=1)
+  Customer Service    : KP=0.00% (n=1)
+  Economics           : KP=25.00% (n=1)
+  Data Engineering    : KP=28.57% (n=1)
+  Automotive Engineering/Embedded Systems Programming: KP=16.67% (n=1)
+  Writing             : KP=0.00% (n=1)
+  Creative Writing/AI Interaction: KP=50.00% (n=1)
+  Statistics / Machine Learning: KP=0.00% (n=1)
+  Career Exploration  : KP=16.67% (n=1)
+  Operating Systems/Programming: KP=20.00% (n=1)
+
+By Difficulty:
+  Beginner       : KP=35.23% (n=248)
+  Intermediate   : KP=25.70% (n=158)
+  Advanced       : KP=18.05% (n=98)
+  N/A            : KP=33.33% (n=1)
+
+================================================================================
